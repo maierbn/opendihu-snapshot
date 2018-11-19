@@ -292,7 +292,7 @@ config = {
           "additionalArgument": 0,
            #"handleResultFunction": handleResult,
            #"handleResultCallInterval": 2e3,
-           "compilerFlags": "-O2 -shared",
+           "compilerFlags": "-O2 -shared",  # needs -finstrument-functions when GNU/intel and trying to use pat_run
           
           "outputStateIndex": 0,     # state 0 = Vm
           "parametersUsedAsIntermediate": parameters_used_as_intermediate,  #[32],       # list of intermediate value indices, that will be set by parameters. Explicitely defined parameters that will be copied to intermediates, this vector contains the indices of the algebraic array. This is ignored if the input is generated from OpenCMISS generated c code.
