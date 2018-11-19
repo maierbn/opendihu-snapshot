@@ -45,4 +45,5 @@ qsub script.pbs
 # 1. needs -finstrument-functions in compile options for all code levels. I.e., core, example code (set USE_CRAY_PAT=True) and eventually in runtime compiled code. (Set compiler options accordingly in settings file.)
 # 2. modules needed: PrgEnv-gnu, perftools-base, perftools-preload.
 # 3. aprun command for example: ´aprun -n8 pat_run -m lite-events -gmpi -r ./shorten_implicit ../settings_shorten.py´
-
+#
+# `-hwp` option gives linker errors
