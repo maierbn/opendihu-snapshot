@@ -52,7 +52,7 @@ with open(report_filename) as csvfile:
         data.append(row)
 n = len(data)
 
-print("keys: {}".format(column_key_map))
+#print("keys: {}".format(column_key_map))
 
 def getCol(colno):
   cols = []

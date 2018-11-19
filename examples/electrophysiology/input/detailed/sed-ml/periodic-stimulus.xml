@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sedML xmlns="http://sed-ml.org/" xmlns:math="http://www.w3.org/1998/Math/MathML"
+	level="1" version="1">
+	<listOfSimulations>
+		<uniformTimeCourse id="simulation1" initialTime="0"
+			outputStartTime="0" outputEndTime="20"
+			numberOfPoints="250">
+			<algorithm kisaoID="KISAO:0000019" />
+		</uniformTimeCourse>
+	</listOfSimulations>
+	<listOfModels>
+		<model id="model1" name="periodic_stimulus" language="urn:sedml:language:cellml"
+			source="http://models.cellml.org/w/andre/VPH-MIP/rawfile/a631d4cb2c449e107dc53444c9c9c605002d383d/experiments/periodic-stimulus.xml" />
+	</listOfModels>
+
+	<listOfTasks>
+		<task id="task1" name="ActionPotentials" modelReference="model1"
+			simulationReference="simulation1" />
+	</listOfTasks>
+	<listOfDataGenerators>
+		<dataGenerator id="dgTime" name="Time">
+			<listOfVariables>
+				<variable id="time" taskReference="task1"
+					target="/cellml:model/cellml:component[@name='time']/cellml:variable[@name='time']" />
+			</listOfVariables>
+			<math:math>
+				<math:ci>time</math:ci>
+			</math:math>
+		</dataGenerator>
+
+		<dataGenerator id="dgVm" name="Membrane potential">
+			<listOfVariables>
+				<variable id="Vm" taskReference="task1"
+					target="/cellml:model/cellml:component[@name='outputs']/cellml:variable[@name='minus_V']" />
+			</listOfVariables>
+			<math:math>
+				<math:ci>Vm</math:ci>
+			</math:math>
+		</dataGenerator>
+		<dataGenerator id="dgINa" name="Sodium current">
+			<listOfVariables>
+				<variable id="INa" taskReference="task1"
+					target="/cellml:model/cellml:component[@name='outputs']/cellml:variable[@name='INa']" />
+			</listOfVariables>
+			<math:math>
+				<math:ci>INa</math:ci>
+			</math:math>
+		</dataGenerator>
+		<dataGenerator id="dgIK" name="Potassium current">
+			<listOfVariables>
+				<variable id="IK" taskReference="task1"
+					target="/cellml:model/cellml:component[@name='outputs']/cellml:variable[@name='IK']" />
+			</listOfVariables>
+			<math:math>
+				<math:ci>IK</math:ci>
+			</math:math>
+		</dataGenerator>
+		<dataGenerator id="dgIleak" name="Leakage current">
+			<listOfVariables>
+				<variable id="Ileak" taskReference="task1"
+					target="/cellml:model/cellml:component[@name='outputs']/cellml:variable[@name='Ileak']" />
+			</listOfVariables>
+			<math:math>
+				<math:ci>Ileak</math:ci>
+			</math:math>
+		</dataGenerator>
+		<dataGenerator id="dgHgate" name="H gate">
+			<listOfVariables>
+				<variable id="h" taskReference="task1"
+					target="/cellml:model/cellml:component[@name='outputs']/cellml:variable[@name='h']" />
+			</listOfVariables>
+			<math:math>
+				<math:ci>h</math:ci>
+			</math:math>
+		</dataGenerator>
+		<dataGenerator id="dgMgate" name="M gate">
+			<listOfVariables>
+				<variable id="m" taskReference="task1"
+					target="/cellml:model/cellml:component[@name='outputs']/cellml:variable[@name='m']" />
+			</listOfVariables>
+			<math:math>
+				<math:ci>m</math:ci>
+			</math:math>
+		</dataGenerator>
+		<dataGenerator id="dgNgate" name="N gate">
+			<listOfVariables>
+				<variable id="n" taskReference="task1"
+					target="/cellml:model/cellml:component[@name='outputs']/cellml:variable[@name='n']" />
+			</listOfVariables>
+			<math:math>
+				<math:ci>n</math:ci>
+			</math:math>
+		</dataGenerator>
+	</listOfDataGenerators>
+
+	<listOfOutputs>
+		<plot2D id="plot1" name="Action Potentials">
+			<listOfCurves>
+				<curve id="c11" logX="false" logY="false" xDataReference="dgTime"
+					yDataReference="dgVm" />
+			</listOfCurves>
+		</plot2D>
+		<plot2D id="plot2" name="Membrane currents">
+			<listOfCurves>
+				<curve id="c21" logX="false" logY="false" xDataReference="dgTime"
+					yDataReference="dgINa" />
+				<curve id="c22" logX="false" logY="false" xDataReference="dgTime"
+					yDataReference="dgIK" />
+				<curve id="c23" logX="false" logY="false" xDataReference="dgTime"
+					yDataReference="dgIleak" />
+			</listOfCurves>
+		</plot2D>
+		<plot2D id="plot3" name="Gating kinetics">
+			<listOfCurves>
+				<curve id="c31" logX="false" logY="false" xDataReference="dgTime"
+					yDataReference="dgHgate" />
+				<curve id="c32" logX="false" logY="false" xDataReference="dgTime"
+					yDataReference="dgMgate" />
+				<curve id="c33" logX="false" logY="false" xDataReference="dgTime"
+					yDataReference="dgNgate" />
+			</listOfCurves>
+		</plot2D>
+	</listOfOutputs>
+</sedML>

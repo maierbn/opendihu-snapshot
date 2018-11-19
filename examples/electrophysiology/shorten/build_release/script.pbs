@@ -1,0 +1,21 @@
+#!/bin/bash
+#PBS -N shorten_cray
+#PBS -l nodes=1:ppn=24
+#PBS -l walltime=01:10:00
+
+# load modules  
+. ~/load_modules.sh
+module switch PrgEnv-gnu/6.0.4 PrgEnv-cray
+#module load perftools-base
+#module load perftools-preload
+
+# Change to the directory that the job was submitted from
+cd $PBS_O_WORKDIR
+cd build_release
+
+export OMP_NUM_THREADS=1
+export nnodes=1
+
+echo "n_nodes=$nnodes"
+. run.sh
+

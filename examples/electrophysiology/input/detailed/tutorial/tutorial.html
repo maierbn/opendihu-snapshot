@@ -1,0 +1,112 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Learning CellML by example: The Hodgkin &amp; Huxley model</title>
+</head>
+<body>
+<p style="font-size: small; margin: 1em 10em;">Hodgkin &amp; Huxley (1952) ‘A Quantitative Description of Membrane Current and its Application to Conduction and Excitation in Nerve’, <i>J. Physiol.</i> <b>117</b>: 500-544.</p>
+<p>
+The <a href="http://www.ncbi.nlm.nih.gov/pubmed/12991237">Hodgkin &amp; Huxley (1952)</a> (HH) model is one of the foundational models of cellular electrophysiology. It defined the “standard” gating kinetics still used in many models today! The model includes potassium, sodium, and ‘leakage’ currents as well and the transmembrane electrical potential. The HH model was originally developed to investigate flow of electric charge in giant nerve axons in squid, but has been applied to a wide range of physiology over the years. The image below shows a graphical view of the elements described in the HH model.
+</p>
+<p>
+This example follows the material prepared for the VPH-MIP standardisation and ontologies module.
+</p>
+<img src="model.png"/>
+<h2>Mathematical overview</h2>
+<p>
+When encoding a model into CellML it is important to first get a good overview of the mathematical equations in the model. A summary for the HH model is shown below. For this model, it is fairly easy to get a good idea of the model structure and begin thinking about how to encode the model in CellML. But this is not always the case, particularly for modern models consisting of many tens of state variables - so often you will need to iterate when developing the CellML encoding of a model. Another reason why it is good practice to make use of a good version control system :)
+</p>
+<img src="math-overview.png"/>
+<h2>Modular description</h2>
+<p>
+CellML divides the mathematical model into distinct components, which are able to be re-used. So we want to divide the mathematical model into meaningful blocks (CellML <i>component</i>). In the HH model, these would be:
+<ul>
+<li>Potassium current component</li>
+<li>Sodium current component</li>
+<li>Leakage current component</li>
+<li>Membrane potential component</li>
+<li>Gating kinetics component – a single definition instantiated three times for the n, m, and h gates</li>
+<li>Time component</li>
+</ul>
+Each of these blocks is itself a CellML <i>model</i>, which enables us to reuse the various components in future studies and models. It is often useful to separate <i>time</i> into its own component as it is used throughout the model and is usually one of the main variables to be managed when joining models together.
+</p>
+<h2>MathML</h2>
+<p>
+CellML uses MathML (<a href="http://www.w3.org/Math">http://www.w3.org/Math</a>) to encode the mathematical equations in a model. Specifically, CellML 1.0 and CellML 1.1 use <a href="http://www.w3.org/TR/MathML2/">MathML 2.0</a>. Using MathML, the equation:</p>
+<img src="gate-equation-math.png"/>
+<p>
+would be encoded in MathML like this:
+</p>
+<img src="gate-equation-mathml.png"/>
+<p>
+which you can see in the CellML model: <a href="../components/gating-variable.xml">gating-variable.xml</a>; in the <code>hh_gating_variable</code> component.
+</p>
+<h2>Define variables</h2>
+<p>
+The equations encoded in MathML define the relationships between <i>variable</i>'s in the CellML model. All variables in CellML must be defined, and must be assigned units, with some examples shown below.
+</p>
+<img src="define-variables.png"/>
+<p>
+In the above example:
+<ul>
+<li><code>X_initial</code> defines the initial value for the state variable <code>X</code> (<code>initial_value="X_initial"</code>)</li>
+<li><code>public_interface="in"</code> means the variable will be defined elsewhere in the model</li>
+<li><code>public_interface="out"</code> means the variable will be available for use elsewhere in the model</li>
+<li>private interfaces are for use with children of this component (encapsulation grouping)</li>
+</ul></p>
+<h2>Define components</h2>
+<p>
+The mathematics and associated variables are grouped into CellML components, which form the reusable building blocks for a model. Continuing the gating variable example above, the skeleton component is shown below. Component's themselves are just a named container that groups the variable definitions with the mathematical expressions in which they are used.
+</p>
+<img src="define-components.png"/>
+<h2>Define model</h2>
+<p>
+The model, in this case, simply provides the wrapper around the component where we import standard unit definitions for use in the variable declarations and math and then define the component. Note the units <code>dimensionless</code> are defined in the CellML standard and therefore do not need to be defined in the model, we just need to define the "non-standard" units that we want to use.
+</p>
+<img src="define-model.png"/>
+<p>
+Everything in the model can, and should, be annotated using RDF/XML – left out here for brevity.
+</p>
+<p>
+The actual HH gating variable model can be found here: <a href="../components/gating-variable.xml">gating-variable.xml</a>.
+</p>
+<h2>Instantiation</h2>
+<p>
+We now have a generic HH gating variable model, so we can instantiate specific instances for the sodium and potassium currents in the HH model. Here we demonstrate the example of the potassium current. Sodium is the same but repeated twice for the m and h gates. (Math is just there for example, does need to be MathML not infix like this.)
+</p>
+<img src="instantiation.png"/>
+<h2>Grouping and connecting</h2>
+<p>
+Creating encapsulation groups allows modellers to create abstract entities for later re-use. Importing the parent of the encapsulation group will also import the child components, so later on when the potassium current component is imported you also get the n-gate and gating rate kinetics (alpha_n and beta_n) defined.
+</p>
+<p>
+The variables in the model need to be connected between components (following the *_interface attributes described earlier). These connections are treated as mathematical equalities with automatic unit conversion. In the snippet here, we need to pass the time and initial value for the gating variable ‘n’ into the gating model and the gating model will return the gating variable ‘n’. Not shown, but we would also need similar connections to connect the gating rate kinetic parameter models to obtain the alpha_n and beta_n values for the given membrane potential, temperature, etc…
+</p>
+<img src="grouping.png"/>
+<h2>Complete mathematical model</h2>
+<p>
+Here we describe the complete mathematical model encoded in CellML, available as the <a href="../components/stimulated.xml"><code>stimulated.xml</code></a>. As normal, first we import the required units. Then we import instances of each of the current components.
+</p><p>
+Then we define an “action potential” component which we will use to define the membrane potential with an applied electrical stimulus. This component will define the “interface” presented to users of this model encoding. It is important to note the public and private interfaces for these variable declarations. <code>public_interface=in</code> means we expect the variable to be defined outside this model (c.f., inputs); <code>public_interface=out</code> means we are making that variable available to users of this model (c.f. outputs); and the private interfaces are used to define the connections to the internal child components of this model.
+</p><p>
+Following best practices, this model separates the mathematics from the parameterisation of the model, so generally we will expect this mathematical model to be imported into a specific parameterised instance in order to perform numerical simulations. The parameterisation would include defining the stimulus protocol to be applied. Similarly, this model may be used in larger scale models, e.g., tissue electrical activation, which might make use of the output variables (current and membrane potential) in further computational models.
+</p><p>
+The block of math in the action potential component defines the differential equation governing the membrane potential, which is just the sum of the transmembrane currents we imported earlier, and an applied stimulus current as described above.
+</p><p>
+We also define an encapsulation group such that the action_potential component can be re-used in further models. For example, as described above, we expect this model to be imported into a specific parameterisation of the mathematical model.
+</p><p>
+As described for the gating variable model previously, we need to connect the variables defined in the action_potential component to the other components in the model (imported above). In order to allow the separation of mathematical model from parameterisation, we need to ensure required parameters are defined all the way up the encapsulation and import hierarchy.
+</p>
+<h2>Instantiation for simulation</h2>
+<p>
+The model above (<a href="../components/stimulated.xml"><code>stimulated.xml</code></a>) defines the mathematical model. In order to perform a simulation, we need to parameterise the model as required for the particular simulation purpose. Here we look at the case when a periodic electrical stimulus current is applied to the model. The CellML model is given at <a href="../experiments/periodic-stimulus.xml"><code>experiments/periodic-stimulus.xml</code></a> and the corresponding <a href="http://sed-ml.org">SED-ML</a> document is <a href="../sed-ml/periodic-stimulus.xml"><code>sed-ml/periodic-stimulus.xml</code></a>. Results from performing this simulation experiment are shown below, the experiment was executed using the <a href="http://sysbioapps.dyndns.org/SED-ML%20Web%20Tools/">SED-ML Web Tools</a>. 
+</p>
+<img src="SED-ML-webTools-ActionPotential.png"/>
+<img src="SED-ML-webTools-Currents.png"/>
+<img src="SED-ML-webTools-Gates.png"/>
+<p>
+You are able to reproduce these simulation results using the SED-ML web tools. First, you need to save the <a href="../sed-ml/periodic-stimulus.xml">SED-ML document</a> to your local file system. Then you go to the <a href="http://sysbioapps.dyndns.org/SED-ML%20Web%20Tools/">SED-ML Web Tools</a> site and upload the SED-ML document to the web site (the actual models used are referenced from the CellML model repository, so you don't need to worry about them). Once the document is uploaded, you are able to validate the SED-ML, check the details of the simulation experiment, and perform the actual experiment - which should result in the above graphs.
+</p>
+</body>
+</html>
