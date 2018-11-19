@@ -1,11 +1,10 @@
 #!/bin/bash
-#PBS -N shorten_cray
+#PBS -N cray
 #PBS -l nodes=1:ppn=24
-#PBS -l walltime=01:10:00
+#PBS -l walltime=00:20:00
 
 # load modules  
-. ~/load_modules.sh
-module switch PrgEnv-gnu/6.0.4 PrgEnv-cray
+module load cray-petsc/3.7.6.0
 #module load perftools-base
 #module load perftools-preload
 
