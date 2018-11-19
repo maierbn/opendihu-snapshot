@@ -1,6 +1,9 @@
-[![Build Status](https://travis-ci.com/maierbn/opendihu.svg?branch=develop)](https://travis-ci.com/maierbn/opendihu)
-[![CodeFactor](https://www.codefactor.io/repository/github/maierbn/opendihu/badge/develop)](https://www.codefactor.io/repository/github/maierbn/opendihu/overview/develop)
+# Description
+This is a snapshot of opendihu from 2018/11/19 with all input files included that are not in the original repo (https://github.com/maierbn/opendihu). (It is derived from branch `parallel_fiber_estimation`)
 
+To get started, read and run the commands in get_started_on_hazelhen.sh
+
+# Default Readme follows
 # Overview
 The working title of this software framework is "opendihu", from the project name "Digital Human". 
 It serves as a code base to solve static and dynamic problems, where the Finite Element Method is used for spatial discretization. 
